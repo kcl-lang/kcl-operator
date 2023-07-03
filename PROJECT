@@ -2,12 +2,12 @@
 # This file is used to track the info used to scaffold your project
 # and allow the plugins properly work.
 # More info: https://book.kubebuilder.io/reference/project-config.html
-domain: my.domain
+domain: kcl-lang.io
 layout:
 - go.kubebuilder.io/v3
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: kcl-operator
-repo: github.com/KusionStack/kcl-operator
+repo: github.com/kcl-lang/kcl-operator
 version: "3"
