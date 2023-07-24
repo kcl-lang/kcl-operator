@@ -16,6 +16,8 @@ KCL Operator provides cluster integration, allowing you to use Access Webhook to
 ```yaml
 apiVersion: krm.kcl.dev/v1alpha1
 kind: KCLRun
+metadata:
+  name: set-annotation
 spec:
   params:
     annotations:
