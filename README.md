@@ -39,9 +39,9 @@ You can directly use [KCL standard libraries](https://kcl-lang.io/docs/reference
 
 ## Tutorial
 
-+ See [here](https://kcl-lang.io/docs/reference/lang/tour) to study more features of KCL.
+See [here](https://kcl-lang.io/docs/reference/lang/tour) to study more features of KCL.
 
 ## Examples
 
-+ See [here](https://github.com/kcl-lang/krm-kcl/tree/main/examples) for more examples.
+See [here](https://github.com/kcl-lang/krm-kcl/tree/main/examples) for more examples.
 
