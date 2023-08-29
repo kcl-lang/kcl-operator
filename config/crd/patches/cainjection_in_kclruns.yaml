@@ -4,4 +4,4 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: $(CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME)
-  name: kclruns.krm.kcl.dev.kcl-lang.io
+  name: kclruns.krm.kcl.dev

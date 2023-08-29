@@ -1,4 +1,4 @@
-apiVersion: krm.kcl.dev.kcl-lang.io/v1alpha1
+apiVersion: krm.kcl.dev/v1alpha1
 kind: KCLRun
 metadata:
   labels:

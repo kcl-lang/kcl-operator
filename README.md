@@ -11,6 +11,10 @@ KCL Operator provides cluster integration, allowing you to use Access Webhook to
 + Validate all KRM resources using KCL schema.
 + Use an abstract model to generate KRM resources.
 
+## Architecture
+
+![architecture](./images/arch.png)
+
 ## CR Example
 
 ```yaml

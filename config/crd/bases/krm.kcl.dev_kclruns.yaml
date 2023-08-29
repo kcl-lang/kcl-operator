@@ -35,10 +35,15 @@ spec:
           spec:
             description: KCLRunSpec defines the desired state of KCLRun
             properties:
-              foo:
-                description: Foo is an example field of KCLRun. Edit kclrun_types.go
-                  to remove/update
+              params:
+                description: Params are the parameters in key-value pairs format.
+                type: object
+              source:
+                description: Source is a required field for providing a KCL script
+                  inline.
                 type: string
+            required:
+            - source
             type: object
           status:
             description: KCLRunStatus defines the observed state of KCLRun

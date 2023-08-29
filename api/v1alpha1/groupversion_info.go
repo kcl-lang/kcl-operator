@@ -16,7 +16,7 @@ limitations under the License.
 
 // Package v1alpha1 contains API Schema definitions for the krm.kcl.dev v1alpha1 API group
 // +kubebuilder:object:generate=true
-// +groupName=krm.kcl.dev.kcl-lang.io
+// +groupName=krm.kcl.dev
 package v1alpha1
 
 import (
@@ -26,7 +26,7 @@ import (
 
 var (
 	// GroupVersion is group version used to register these objects
-	GroupVersion = schema.GroupVersion{Group: "krm.kcl.dev.kcl-lang.io", Version: "v1alpha1"}
+	GroupVersion = schema.GroupVersion{Group: "krm.kcl.dev", Version: "v1alpha1"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}

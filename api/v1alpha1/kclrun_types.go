@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -28,8 +29,10 @@ type KCLRunSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of KCLRun. Edit kclrun_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// Source is a required field for providing a KCL script inline.
+	Source string `json:"source" yaml:"source"`
+	// Params are the parameters in key-value pairs format.
+	Params unstructured.Unstructured `json:"params,omitempty" yaml:"params,omitempty"`
 }
 
 // KCLRunStatus defines the observed state of KCLRun
@@ -43,20 +46,20 @@ type KCLRunStatus struct {
 
 // KCLRun is the Schema for the kclruns API
 type KCLRun struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
+	metav1.TypeMeta   `json:",inline" yaml:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 
-	Spec   KCLRunSpec   `json:"spec,omitempty"`
-	Status KCLRunStatus `json:"status,omitempty"`
+	Spec   KCLRunSpec   `json:"spec,omitempty" yaml:"spec,omitempty"`
+	Status KCLRunStatus `json:"status,omitempty" yaml:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
 // KCLRunList contains a list of KCLRun
 type KCLRunList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []KCLRun `json:"items"`
+	metav1.TypeMeta `json:",inline" yaml:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
+	Items           []KCLRun `json:"items" yaml:"items"`
 }
 
 func init() {
