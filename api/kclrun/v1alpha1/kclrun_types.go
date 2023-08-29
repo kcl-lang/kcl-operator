@@ -61,7 +61,3 @@ type KCLRunList struct {
 	metav1.ListMeta `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 	Items           []KCLRun `json:"items" yaml:"items"`
 }
-
-func init() {
-	SchemeBuilder.Register(&KCLRun{}, &KCLRunList{})
-}

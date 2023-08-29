@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	krmkcldevv1alpha1 "kcl-lang.io/kcl-operator/api/v1alpha1"
+	krmkcldevv1alpha1 "kcl-lang.io/kcl-operator/api/kclrun/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 

@@ -24,3 +24,7 @@ go.work
 
 # IDE
 .vscode
+
+/vendor
+.tools
+.gopath

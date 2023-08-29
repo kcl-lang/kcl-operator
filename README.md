@@ -29,11 +29,18 @@ spec:
   source: oci://ghcr.io/kcl-lang/set-annotation
 ```
 
+## Developing
+
++ Install Go 1.20+
++ Install [Operator SDK](https://sdk.operatorframework.io/)
+
+Run `make help` to get the help.
+
 ## Guides for Developing KCL
 
 Here's what you can do in the KCL script:
 
-+ Read resources from `option("resource_list")`. The `option("resource_list")` complies with the [KRM Functions Specification](https://github.com/kubernetes-sigs/kustomize/blob/master/cmd/config/docs/api-conventions/functions-spec.md#krm-functions-specification). You can read the input resources from `option("resource_list")["items"]` and the `functionConfig` from `option("resource_list")["functionConfig"]`.
++ Read resources from `option("resource_list")`. The `option("resource_list")` complies with the [KRM Functions Specification](https://github.com/kubernetes-sigs/kustomize/blob/master/cmd/config/docs/api-conventions/functions-spec.md#krm-functions-specification). You can read the input resources from `option("items")` and the `params` from `option("params")`.
 + Return a KRM list for output resources.
 + Return an error using `assert {condition}, {error_message}`.
 + Read the environment variables. e.g. `option("PATH")` (**Not yet implemented**).
@@ -41,7 +48,7 @@ Here's what you can do in the KCL script:
 
 ## Library
 
-You can directly use [KCL standard libraries](https://kcl-lang.io/docs/reference/model/overview) without importing them, such as `regex.match`, `math.log`.
+You can directly use [KCL standard libraries](https://kcl-lang.io/docs/reference/model/overview) such as `regex.match`, `math.log`.
 
 ## Tutorial
 
