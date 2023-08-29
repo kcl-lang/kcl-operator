@@ -6,7 +6,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - krm.kcl.dev.kcl-lang.io
+  - krm.kcl.dev
   resources:
   - kclruns
   verbs:
@@ -18,13 +18,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - krm.kcl.dev.kcl-lang.io
+  - krm.kcl.dev
   resources:
   - kclruns/finalizers
   verbs:
   - update
 - apiGroups:
-  - krm.kcl.dev.kcl-lang.io
+  - krm.kcl.dev
   resources:
   - kclruns/status
   verbs:

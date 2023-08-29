@@ -33,9 +33,9 @@ type KCLRunReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=krm.kcl.dev.kcl-lang.io,resources=kclruns,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=krm.kcl.dev.kcl-lang.io,resources=kclruns/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=krm.kcl.dev.kcl-lang.io,resources=kclruns/finalizers,verbs=update
+//+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
