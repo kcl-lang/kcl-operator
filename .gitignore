@@ -28,3 +28,4 @@ go.work
 /vendor
 .tools
 .gopath
+.DS_store

@@ -15,26 +15,74 @@ KCL Operator provides cluster integration, allowing you to use Access Webhook to
 
 ![architecture](./images/arch.png)
 
-## CR Example
+## Developing
 
-```yaml
++ Install Go 1.20+
++ Install Kubectl and Kustomize
++ Install [Operator SDK](https://sdk.operatorframework.io/)
++ Prepare a Kubernetes Cluster e.g., K3d
+
+Run `make help` to get the help.
+
+## Quick Start
+
+1. Deploy the KCL Operator.
+
+```shell
+make deploy
+```
+
+Use the following command to watch and wait the pod status is Running.
+
+```shell
+kubectl get po
+```
+
+2. Deploy the KCL source
+
+```shell
+kubectl apply -f- << EOF
 apiVersion: krm.kcl.dev/v1alpha1
 kind: KCLRun
 metadata:
   name: set-annotation
 spec:
-  params:
-    annotations:
-      config.kubernetes.io/local-config: "true"
-  source: oci://ghcr.io/kcl-lang/set-annotation
+  source: |
+    items = [item | {
+        metadata.annotations: {
+            "managed-by" = "kcl-operator"
+        }
+    } for item in option("items")]
+EOF
 ```
 
-## Developing
+3. Validate the mutation result by creating a nginx Pod YAML.
 
-+ Install Go 1.20+
-+ Install [Operator SDK](https://sdk.operatorframework.io/)
+```shell
+kubectl apply -f- << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  annotations:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+EOF
+kubectl get po nginx -o yaml | grep kcl-operator
+```
 
-Run `make help` to get the help.
+The output is
+
+```shell
+    managed-by: kcl-operator
+```
+
+We can find the annotation `managed-by=kcl-operator` is added on the pod.
 
 ## Guides for Developing KCL
 
@@ -57,4 +105,3 @@ See [here](https://kcl-lang.io/docs/reference/lang/tour) to study more features 
 ## Examples
 
 See [here](https://github.com/kcl-lang/krm-kcl/tree/main/examples) for more examples.
-
