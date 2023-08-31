@@ -1,12 +1,20 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM golang:1.19 as builder
 
-ENV TZ="Europe/Zurich" \
-  LANG="en_US.UTF-8" \
-  WEBHOOK=/usr/local/bin/webhook \
-  UIDGID=1001:1001
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct
 
-COPY bin/webhook ${WEBHOOK}
+WORKDIR /
 
-USER ${UIDGID}
+COPY . .
 
-CMD ["${WEBHOOK}"]
+RUN GOOS=linux GOARCH=amd64 go build -o manager
+
+FROM kcllang/kcl
+
+WORKDIR /
+COPY --from=builder /manager .
+
+ENV KCL_GO_DISABLE_ARTIFACT=on
+ENV LANG="en_US.UTF-8"
+
+ENTRYPOINT ["/manager"]

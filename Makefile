@@ -47,9 +47,9 @@ ifeq ($(USE_IMAGE_DIGESTS), true)
 endif
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+IMG ?= kcllang/webhookserver
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.26.0
+ENVTEST_K8S_VERSION = 1.28.0
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -134,15 +134,19 @@ test: manifests generate fmt vet envtest ## Run tests.
 
 .PHONY: build
 build: ## Build binaries.
-	make webhook
+	make manager
 
-.PHONY: webhook
-webhook: manifests generate fmt vet ## Build webhook binary
-	go build -o bin/webhook main.go
+.PHONY: build
+build-linux: ## Build binaries.
+	make manager-linux
 
-.PHONY: webhook-linux
-webhook-linux: generate fmt vet
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o build/bin/webhook main.go
+.PHONY: manager
+manager: manifests generate fmt vet ## Build manager binary
+	go build -o bin/manager main.go
+
+.PHONY: manager-linux
+manager-linux: generate fmt vet
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o build/bin/manager main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
@@ -152,11 +156,11 @@ run: manifests generate fmt vet ## Run a controller from your host.
 # (i.e. docker build --platform linux/arm64 ). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker-build
-docker-build: webhook-linux ## Build docker image with the webhook.
+docker-build: ## Build docker image with the manager.
 	docker build -t $(IMG) .
 
 .PHONY: docker-push
-docker-push: ## Push docker image with the webhook.
+docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
 # PLATFORMS defines the target platforms for the manager image be build to provide support to multiple

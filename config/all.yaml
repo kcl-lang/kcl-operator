@@ -1,10 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    control-plane: controller-manager
-  name: kcl-operator-system
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -70,52 +63,14 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: serviceaccount
     app.kubernetes.io/part-of: kcl-operator
-  name: kcl-operator-controller-manager
-  namespace: kcl-operator-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: kcl-operator-leader-election-role
-  namespace: kcl-operator-system
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - configmaps/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - update
-  - patch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - create
-  - patch
+  name: controller-manager
+  namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   creationTimestamp: null
-  name: kcl-operator-manager-role
+  name: manager-role
 rules:
 - apiGroups:
   - krm.kcl.dev
@@ -145,190 +100,94 @@ rules:
   - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/component: kube-rbac-proxy
-    app.kubernetes.io/created-by: kcl-operator
-    app.kubernetes.io/instance: metrics-reader
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/part-of: kcl-operator
-  name: kcl-operator-metrics-reader
-rules:
-- nonResourceURLs:
-  - /metrics
-  verbs:
-  - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app.kubernetes.io/component: kube-rbac-proxy
-    app.kubernetes.io/created-by: kcl-operator
-    app.kubernetes.io/instance: proxy-role
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/part-of: kcl-operator
-  name: kcl-operator-proxy-role
-rules:
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: kcl-operator-leader-election-rolebinding
-  namespace: kcl-operator-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: kcl-operator-leader-election-role
-subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: kcl-operator-system
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kcl-operator-manager-rolebinding
+  name: manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kcl-operator-manager-role
+  name: manager-role
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: kcl-operator-system
+  namespace: default
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+apiVersion: v1
+data:
+  cert.pem: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQ1akNDQXM2Z0F3SUJBZ0lVSk03UjJPZ1JpcUN4dGZpaDRhZHpMbnF3aTVJd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2dZTXhDekFKQmdOVkJBWVRBa05PTVJBd0RnWURWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQwpaV2xxYVc1bk1SUXdFZ1lEVlFRS0V3dFZibWwwWldSVGRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3Ckp3WURWUVFERXlCd2IyUXRZVzV1YjNSaGRHVXRkMlZpYUc5dmF5NWtaV1poZFd4MExuTjJZekFnRncweU16QTQKTXpFd01qVXdNemRhR0E4ek1ESXpNREV3TVRBeU5UQXpOMW93Z1lNeEN6QUpCZ05WQkFZVEFrTk9NUkF3RGdZRApWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQ1pXbHFhVzVuTVJRd0VnWURWUVFLRXd0VmJtbDBaV1JUCmRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3SndZRFZRUURFeUJ3YjJRdFlXNXViM1JoZEdVdGQyVmkKYUc5dmF5NWtaV1poZFd4MExuTjJZekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQgpBTXVrYTFBS0tYNko2UWhrQmQ2clNyRzh0a3ZsbG5lcW5PTE5ya0FZMGV0VXNtS3hlZnJoYUhjNlhjdTJYcGFZCitGRWxTeEU0ZGNKa09YWmpGTDg4c3RleXRqOWFHaG5uOHN3WnozMWFNUU5iMWJERjIvTTdVWm16bjVKdG1IV2MKKzdnUUJORDN5Myt6SFZyaWNYVnNxb2ppSFhoN0huUC8vVlRNellrTUhtUk9ER0ZZTUlRVmowcDl3VFVYMnE3NQphSS9zMTY2Vi9CRURIbHNlc29SbnVjU0h4R2JtMzF3TnNQSFQzOWpIRHEvV3AvNytzNnpjT3hZekt1MzdIOWN1CkIycDhRNUp6NWdtazFuU01JZU1rUGhveStWUXYrRHR2TnNnN2tWOGhvTERKOWdBdW5obDFUbVNLQmU2elM1SUsKS3RaWFNENE1NQjc3VC9CTXBmU3VLQ01DQXdFQUFhTk9NRXd3S3dZRFZSMFJCQ1F3SW9JZ2NHOWtMV0Z1Ym05MApZWFJsTFhkbFltaHZiMnN1WkdWbVlYVnNkQzV6ZG1Nd0hRWURWUjBPQkJZRUZMZGgycnVhYjAxSERSN2xGWlBHClRUbEU1ZXg0TUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFESEJONmNNdmZ1OTJpWjZEM1ZLUDdFbnIzWHF4cXYKUE9CdTdMRnlxRVBySlZ4L2E0ME5zUXQzYlk4NWUzOXM5aERHRklYcTVwcXpQRFl3WUxnUW8za2IyVjJCVVVmcwpBZmtjVE9DbExsK3dDK2kzTm9mZzNLZC9CckUxelRhUGc1UmFkRU5HUVZmbjZ6a3NYNEVBaXJhUmdhVW9uQmFPCk5WdUFLZ1phSVovUXJjQ1RjSGZMNC9yeVNWT0hTSzRZa05RWFVWZnhscGJCaU9HRUg3N2NqS3g2eEpjSHZTYnoKVXJtZlFHQ25IS25aWUJhSVJ2ZTErWGtEbEllUkFlTlB1SWh2YjRKZm0yNmxYbnFVcXpoeEd4b29wQi81eHN6NwoyeEpmWFdwdzhVZWpudGYxRzRIYytyVStJL1dnRnM2WTRFb3pTUzVKOWtCVHNYSkdFb011cVFhbAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  key.pem: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2QUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktZd2dnU2lBZ0VBQW9JQkFRRExwR3RRQ2lsK2lla0kKWkFYZXEwcXh2TFpMNVpaM3Fweml6YTVBR05IclZMSmlzWG42NFdoM09sM0x0bDZXbVBoUkpVc1JPSFhDWkRsMgpZeFMvUExMWHNyWS9XaG9aNS9MTUdjOTlXakVEVzlXd3hkdnpPMUdaczUrU2JaaDFuUHU0RUFUUTk4dC9zeDFhCjRuRjFiS3FJNGgxNGV4NXovLzFVek0ySkRCNWtUZ3hoV0RDRUZZOUtmY0UxRjlxdStXaVA3TmV1bGZ3UkF4NWIKSHJLRVo3bkVoOFJtNXQ5Y0RiRHgwOS9ZeHc2djFxZisvck9zM0RzV015cnQreC9YTGdkcWZFT1NjK1lKcE5aMApqQ0hqSkQ0YU12bFVML2c3YnpiSU81RmZJYUN3eWZZQUxwNFpkVTVraWdYdXMwdVNDaXJXVjBnK0REQWUrMC93ClRLWDByaWdqQWdNQkFBRUNnZ0VBTDRpaCtlMWRVU21jeVBZYi9xVktDcUhMaFh6Q09nMkxrRTlGVUxYYWJnMTMKbEJ6c0paanUyd0czT2lGSUErd1I3bEwvcWpYZEd2SnREVXJFWVgwb0c3d2QyVHpOWWVXbjRXZFc3T0ljRmJZZQpjNlJEbW90cW1TOTUzR0tUbDBSODV6SnFCV01KejdWOThTUnhLbUVpajFBRVpBYU5EYk9mck9jZlJOR2MySG1LCmR3RXhWZDMxeTFpUkhNS05ndjZZZmMwZ1lNaGFmc3lNMC9oS1dQMVFlcHRCRnNRYktlcFBSNmhSLzRiT0ZYeUEKeXdBNVZWZ1p4VWF0MElWbCt2UnZXUWE3SUdOQTFSVmxNK0lEWW9HaE1wVGg2OGl4ajdaL3ZIbVpBOVJxTDl3NQpMajFHKzJldUtvYzdJY0dZRkwzT1MvdFpqSm1lVTlaNDdqaTBqM0t6UFFLQmdRRDJrdXh3Ym5SWVo0Tzl0eTQ3CnlZa3dDNFh3VFpXampwdmR6VjRSWlFCRXd4UlF4OTVPV0RoU1U3d3o2MHczZkprUTFPUnFycGx4QytraVMxMmkKRHo2ZFN3eDZ0M01NWTh4dGZXNFMrVFVrMUN4ZHpUQVVBdFRENThYRlRZdVVGTjdlZFlrZmZMbkxkbUd0TU5USwovUVlOV0F4UWM2NGkraTFDSXF1bDcwMXVid0tCZ1FEVGJWa3BJczJ0QzYrdHREajBwUFVnNDdJeTZhdVdnREdPCmVwS0xmeVk3M2J3dm5vTHNnT2pXVkloOGd5Umc3a1JPQ0pNRlZWdXAzSDdRUzFjQkpyMHlZMmwwejhCUEZCQ20KbUVMY3BHcmtCUjVqT0creThubXNyLzJkMjF1NmRCbDJtcUQ5UGJuOHhjbG1PTVAwam9aZW5LRnBLMW5UdUJ1TQpVSldoNlJkN2pRS0JnRkp0K1piNGhmS0w0SEhLekN6MmllTkM1dXJYdFAreGpBL1JPUEpOdHBKR09RTnNYYmdKCkxBTHh0VWdTRUMrNGVwOHkzSTJCZ3hCVXNBSmorWkJVMGxUWkl2bmZYQm0zUHo4WElIWTlVM1BWYm1PSlZkcEsKdkFBbCttcWtLdFk5UitoTW1LT3JHWjJZSEwwK1J0VDVVMDJnc3JVdWh2ZHdkVExYemxReHRNd0hBb0dBVCtXYwpzZnppK0tmWDVhNmJiMmYrOGtUWmpIL2RSZXgvemJYb055ci9pZFFMVDN0NVFtS2NtcElyV2RJOUp4d2pWOUhKCnJWUktaWEJidzk4VXEreTF4cHJtdVN2aElvRVVvY0FjVkVFVjI4RkxjSGRkVHFSdThxRTNHRFpTL2F6dUNuSDQKc0hwcEZHcXg1eDFBZitSMFJzQ3VCbzVKVGNiZk1qRXB1cHZaTWVrQ2dZQmdmK3Bzc1dVc2p0ejg5bXBTQWlyQwovMG5ncXA3K1dHWWI4QzMxQmRBSGNsWER0ZzBwZHk4QkhjQndIWHBTMlpVZk5rN1pieVZDMzRxYndCa1FrcXc2CjZ3SnI1bWJheDNZbDdJTXVKQlRWdmpxN0JBU1dKS21ZUERBT2JsTGYyMW1SK3oxYXBFSjZkbUE5aHBtNDB6V3oKOWV3T0NjRWJFaGw0Wm9nREJjc1kwdz09Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+kind: Secret
 metadata:
-  labels:
-    app.kubernetes.io/component: kube-rbac-proxy
-    app.kubernetes.io/created-by: kcl-operator
-    app.kubernetes.io/instance: proxy-rolebinding
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: clusterrolebinding
-    app.kubernetes.io/part-of: kcl-operator
-  name: kcl-operator-proxy-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: kcl-operator-proxy-role
-subjects:
-- kind: ServiceAccount
-  name: kcl-operator-controller-manager
-  namespace: kcl-operator-system
+  creationTimestamp: null
+  name: pod-annotate-webhook-certs
+  namespace: default
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/component: kube-rbac-proxy
-    app.kubernetes.io/created-by: kcl-operator
-    app.kubernetes.io/instance: controller-manager-metrics-service
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: service
-    app.kubernetes.io/part-of: kcl-operator
-    control-plane: controller-manager
-  name: kcl-operator-controller-manager-metrics-service
-  namespace: kcl-operator-system
-spec:
-  ports:
-  - name: https
-    port: 8443
-    protocol: TCP
-    targetPort: https
-  selector:
-    control-plane: controller-manager
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    service.alpha.openshift.io/serving-cert-secret-name: kcl-operator-serving-cert
-  labels:
-    webhook: kcl-operator
-  name: kcl-operator-webhook-service
-  namespace: kcl-operator-system
+    app: pod-annotate-webhook
+  name: pod-annotate-webhook
+  namespace: default
 spec:
   ports:
   - port: 443
-    targetPort: 9443
+    protocol: TCP
+    targetPort: 8081
   selector:
-    webhook: kcl-operator
+    app: pod-annotate-webhook
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    control-plane: controller-manager
-  name: kcl-operator-controller-manager
-  namespace: kcl-operator-system
+    app: pod-annotate-webhook
+  name: pod-annotate-webhook
+  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: controller-manager
+      app: pod-annotate-webhook
   template:
     metadata:
       labels:
-        control-plane: controller-manager
+        app: pod-annotate-webhook
     spec:
       containers:
       - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=10
-        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-      - args:
-        - --metrics-addr=127.0.0.1:8080
-        - --enable-leader-election
-        command:
-        - /manager
-        image: controller:latest
-        name: manager
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 10m
-            memory: 64Mi
-      terminationGracePeriodSeconds: 10
+        - -tls-cert-file=/etc/webhook/certs/cert.pem
+        - -tls-key-file=/etc/webhook/certs/key.pem
+        - -addr=:8081
+        image: kcllang/webhookserver
+        imagePullPolicy: Always
+        name: pod-annotate-webhook
+        volumeMounts:
+        - mountPath: /etc/webhook/certs
+          name: webhook-certs
+          readOnly: true
+      volumes:
+      - name: webhook-certs
+        secret:
+          secretName: pod-annotate-webhook-certs
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
-kind: ValidatingWebhookConfiguration
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
 metadata:
-  creationTimestamp: null
-  name: kcl-operator-prometheus-rule-validating-webhook
+  labels:
+    app: pod-annotate-webhook
+    kind: mutator
+  name: pod-annotate-webhook
 webhooks:
-- clientConfig:
-    caBundle: Cg==
+- admissionReviewVersions:
+  - v1beta1
+  clientConfig:
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQ1akNDQXM2Z0F3SUJBZ0lVSk03UjJPZ1JpcUN4dGZpaDRhZHpMbnF3aTVJd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2dZTXhDekFKQmdOVkJBWVRBa05PTVJBd0RnWURWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQwpaV2xxYVc1bk1SUXdFZ1lEVlFRS0V3dFZibWwwWldSVGRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3Ckp3WURWUVFERXlCd2IyUXRZVzV1YjNSaGRHVXRkMlZpYUc5dmF5NWtaV1poZFd4MExuTjJZekFnRncweU16QTQKTXpFd01qVXdNemRhR0E4ek1ESXpNREV3TVRBeU5UQXpOMW93Z1lNeEN6QUpCZ05WQkFZVEFrTk9NUkF3RGdZRApWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQ1pXbHFhVzVuTVJRd0VnWURWUVFLRXd0VmJtbDBaV1JUCmRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3SndZRFZRUURFeUJ3YjJRdFlXNXViM1JoZEdVdGQyVmkKYUc5dmF5NWtaV1poZFd4MExuTjJZekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQgpBTXVrYTFBS0tYNko2UWhrQmQ2clNyRzh0a3ZsbG5lcW5PTE5ya0FZMGV0VXNtS3hlZnJoYUhjNlhjdTJYcGFZCitGRWxTeEU0ZGNKa09YWmpGTDg4c3RleXRqOWFHaG5uOHN3WnozMWFNUU5iMWJERjIvTTdVWm16bjVKdG1IV2MKKzdnUUJORDN5Myt6SFZyaWNYVnNxb2ppSFhoN0huUC8vVlRNellrTUhtUk9ER0ZZTUlRVmowcDl3VFVYMnE3NQphSS9zMTY2Vi9CRURIbHNlc29SbnVjU0h4R2JtMzF3TnNQSFQzOWpIRHEvV3AvNytzNnpjT3hZekt1MzdIOWN1CkIycDhRNUp6NWdtazFuU01JZU1rUGhveStWUXYrRHR2TnNnN2tWOGhvTERKOWdBdW5obDFUbVNLQmU2elM1SUsKS3RaWFNENE1NQjc3VC9CTXBmU3VLQ01DQXdFQUFhTk9NRXd3S3dZRFZSMFJCQ1F3SW9JZ2NHOWtMV0Z1Ym05MApZWFJsTFhkbFltaHZiMnN1WkdWbVlYVnNkQzV6ZG1Nd0hRWURWUjBPQkJZRUZMZGgycnVhYjAxSERSN2xGWlBHClRUbEU1ZXg0TUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFESEJONmNNdmZ1OTJpWjZEM1ZLUDdFbnIzWHF4cXYKUE9CdTdMRnlxRVBySlZ4L2E0ME5zUXQzYlk4NWUzOXM5aERHRklYcTVwcXpQRFl3WUxnUW8za2IyVjJCVVVmcwpBZmtjVE9DbExsK3dDK2kzTm9mZzNLZC9CckUxelRhUGc1UmFkRU5HUVZmbjZ6a3NYNEVBaXJhUmdhVW9uQmFPCk5WdUFLZ1phSVovUXJjQ1RjSGZMNC9yeVNWT0hTSzRZa05RWFVWZnhscGJCaU9HRUg3N2NqS3g2eEpjSHZTYnoKVXJtZlFHQ25IS25aWUJhSVJ2ZTErWGtEbEllUkFlTlB1SWh2YjRKZm0yNmxYbnFVcXpoeEd4b29wQi81eHN6NwoyeEpmWFdwdzhVZWpudGYxRzRIYytyVStJL1dnRnM2WTRFb3pTUzVKOWtCVHNYSkdFb011cVFhbAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
     service:
-      name: kcl-operator-webhook-service
-      namespace: kcl-operator-system
-      path: /validate-v1-prometheusrule
-  failurePolicy: Fail
-  name: prometheusrule-validating-webhook.example.com
+      name: pod-annotate-webhook
+      namespace: default
+      path: /mutate
+  name: pod-annotate-webhook.slok.dev
   rules:
   - apiGroups:
     - ""
@@ -336,6 +195,6 @@ webhooks:
     - v1
     operations:
     - CREATE
-    - UPDATE
     resources:
     - pods
+  sideEffects: None
