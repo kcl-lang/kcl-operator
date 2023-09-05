@@ -36,6 +36,9 @@ spec:
             description: KCLRunSpec defines the desired state of KCLRun
             properties:
               params:
+                additionalProperties:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
                 description: Params are the parameters in key-value pairs format.
                 type: object
               source:

@@ -18,7 +18,7 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -32,7 +32,7 @@ type KCLRunSpec struct {
 	// Source is a required field for providing a KCL script inline.
 	Source string `json:"source" yaml:"source"`
 	// Params are the parameters in key-value pairs format.
-	Params unstructured.Unstructured `json:"params,omitempty" yaml:"params,omitempty"`
+	Params map[string]runtime.RawExtension `json:"params,omitempty" yaml:"params,omitempty"`
 }
 
 // KCLRunStatus defines the observed state of KCLRun

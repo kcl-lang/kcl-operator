@@ -32,7 +32,7 @@ Run `make help` to get the help.
 make deploy
 ```
 
-Use the following command to watch and wait the pod status is Running.
+Use the following command to watch and wait for the pod status is `Running`.
 
 ```shell
 kubectl get po
@@ -47,12 +47,11 @@ kind: KCLRun
 metadata:
   name: set-annotation
 spec:
+  params:
+    annotations:
+      managed-by: kcl-operator
   source: |
-    items = [item | {
-        metadata.annotations: {
-            "managed-by" = "kcl-operator"
-        }
-    } for item in option("items")]
+    items = [item | {metadata.annotations: option("params").annotations} for item in option("items")]
 EOF
 ```
 
