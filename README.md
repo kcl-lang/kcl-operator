@@ -50,8 +50,7 @@ spec:
   params:
     annotations:
       managed-by: kcl-operator
-  source: |
-    items = [item | {metadata.annotations: option("params").annotations} for item in option("items")]
+  source: oci://ghcr.io/kcl-lang/set-annotation
 EOF
 ```
 
