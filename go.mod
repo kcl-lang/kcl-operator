@@ -3,7 +3,7 @@ module kcl-lang.io/kcl-operator
 go 1.20
 
 require (
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/slok/kubewebhook/v2 v2.5.0
 	k8s.io/apimachinery v0.28.0
 	k8s.io/client-go v0.28.0
