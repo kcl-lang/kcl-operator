@@ -17,7 +17,7 @@ KCL Operator provides cluster integration, allowing you to use Access Webhook to
 
 ## Developing
 
-+ Install Go 1.20+
++ Install Go 1.22+
 + Install Kubectl and Kustomize
 + Install [Operator SDK](https://sdk.operatorframework.io/)
 + Prepare a Kubernetes Cluster e.g., K3d
