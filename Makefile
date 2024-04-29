@@ -225,7 +225,7 @@ ENVTEST ?= $(LOCALBIN)/setup-envtest
 KIND                               := $(TOOLS_DIR)/kind
 KIND_VERSION                       := v0.20.0
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
-CONTROLLER_GEN_VERSION             := v0.14.0
+CONTROLLER_GEN_VERSION             := v0.15.0
 CLIENT_GEN                         := $(TOOLS_DIR)/client-gen
 LISTER_GEN                         := $(TOOLS_DIR)/lister-gen
 INFORMER_GEN                       := $(TOOLS_DIR)/informer-gen
@@ -311,7 +311,7 @@ $(HELM_DOCS):
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v3.8.7
-CONTROLLER_TOOLS_VERSION ?= v0.14.0
+CONTROLLER_TOOLS_VERSION ?= v0.15.0
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
