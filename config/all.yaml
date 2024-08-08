@@ -125,15 +125,15 @@ data:
 kind: Secret
 metadata:
   creationTimestamp: null
-  name: pod-annotate-webhook-certs
+  name: kcl-operator-webhook-certs
   namespace: default
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: pod-annotate-webhook
-  name: pod-annotate-webhook
+    app: kcl-operator-webhook
+  name: kcl-operator-webhook
   namespace: default
 spec:
   ports:
@@ -141,24 +141,24 @@ spec:
     protocol: TCP
     targetPort: 8081
   selector:
-    app: pod-annotate-webhook
+    app: kcl-operator-webhook
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: pod-annotate-webhook
-  name: pod-annotate-webhook
+    app: kcl-operator-webhook
+  name: kcl-operator-webhook
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pod-annotate-webhook
+      app: kcl-operator-webhook
   template:
     metadata:
       labels:
-        app: pod-annotate-webhook
+        app: kcl-operator-webhook
     spec:
       containers:
       - args:
@@ -167,7 +167,7 @@ spec:
         - -addr=:8081
         image: kcllang/webhookserver
         imagePullPolicy: Always
-        name: pod-annotate-webhook
+        name: kcl-operator-webhook
         volumeMounts:
         - mountPath: /etc/webhook/certs
           name: webhook-certs
@@ -175,25 +175,25 @@ spec:
       volumes:
       - name: webhook-certs
         secret:
-          secretName: pod-annotate-webhook-certs
+          secretName: kcl-operator-webhook-certs
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   labels:
-    app: pod-annotate-webhook
+    app: kcl-operator-webhook
     kind: mutator
-  name: pod-annotate-webhook
+  name: kcl-operator-webhook
 webhooks:
 - admissionReviewVersions:
   - v1beta1
   clientConfig:
     caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQ1akNDQXM2Z0F3SUJBZ0lVSk03UjJPZ1JpcUN4dGZpaDRhZHpMbnF3aTVJd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2dZTXhDekFKQmdOVkJBWVRBa05PTVJBd0RnWURWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQwpaV2xxYVc1bk1SUXdFZ1lEVlFRS0V3dFZibWwwWldSVGRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3Ckp3WURWUVFERXlCd2IyUXRZVzV1YjNSaGRHVXRkMlZpYUc5dmF5NWtaV1poZFd4MExuTjJZekFnRncweU16QTQKTXpFd01qVXdNemRhR0E4ek1ESXpNREV3TVRBeU5UQXpOMW93Z1lNeEN6QUpCZ05WQkFZVEFrTk9NUkF3RGdZRApWUVFJRXdkQ1pXbHFhVzVuTVJBd0RnWURWUVFIRXdkQ1pXbHFhVzVuTVJRd0VnWURWUVFLRXd0VmJtbDBaV1JUCmRHRmphekVQTUEwR0ExVUVDeE1HUkdWMmIzQnpNU2t3SndZRFZRUURFeUJ3YjJRdFlXNXViM1JoZEdVdGQyVmkKYUc5dmF5NWtaV1poZFd4MExuTjJZekNDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQgpBTXVrYTFBS0tYNko2UWhrQmQ2clNyRzh0a3ZsbG5lcW5PTE5ya0FZMGV0VXNtS3hlZnJoYUhjNlhjdTJYcGFZCitGRWxTeEU0ZGNKa09YWmpGTDg4c3RleXRqOWFHaG5uOHN3WnozMWFNUU5iMWJERjIvTTdVWm16bjVKdG1IV2MKKzdnUUJORDN5Myt6SFZyaWNYVnNxb2ppSFhoN0huUC8vVlRNellrTUhtUk9ER0ZZTUlRVmowcDl3VFVYMnE3NQphSS9zMTY2Vi9CRURIbHNlc29SbnVjU0h4R2JtMzF3TnNQSFQzOWpIRHEvV3AvNytzNnpjT3hZekt1MzdIOWN1CkIycDhRNUp6NWdtazFuU01JZU1rUGhveStWUXYrRHR2TnNnN2tWOGhvTERKOWdBdW5obDFUbVNLQmU2elM1SUsKS3RaWFNENE1NQjc3VC9CTXBmU3VLQ01DQXdFQUFhTk9NRXd3S3dZRFZSMFJCQ1F3SW9JZ2NHOWtMV0Z1Ym05MApZWFJsTFhkbFltaHZiMnN1WkdWbVlYVnNkQzV6ZG1Nd0hRWURWUjBPQkJZRUZMZGgycnVhYjAxSERSN2xGWlBHClRUbEU1ZXg0TUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFESEJONmNNdmZ1OTJpWjZEM1ZLUDdFbnIzWHF4cXYKUE9CdTdMRnlxRVBySlZ4L2E0ME5zUXQzYlk4NWUzOXM5aERHRklYcTVwcXpQRFl3WUxnUW8za2IyVjJCVVVmcwpBZmtjVE9DbExsK3dDK2kzTm9mZzNLZC9CckUxelRhUGc1UmFkRU5HUVZmbjZ6a3NYNEVBaXJhUmdhVW9uQmFPCk5WdUFLZ1phSVovUXJjQ1RjSGZMNC9yeVNWT0hTSzRZa05RWFVWZnhscGJCaU9HRUg3N2NqS3g2eEpjSHZTYnoKVXJtZlFHQ25IS25aWUJhSVJ2ZTErWGtEbEllUkFlTlB1SWh2YjRKZm0yNmxYbnFVcXpoeEd4b29wQi81eHN6NwoyeEpmWFdwdzhVZWpudGYxRzRIYytyVStJL1dnRnM2WTRFb3pTUzVKOWtCVHNYSkdFb011cVFhbAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
     service:
-      name: pod-annotate-webhook
+      name: kcl-operator-webhook
       namespace: default
       path: /mutate
-  name: pod-annotate-webhook.slok.dev
+  name: kcl-operator-webhook.slok.dev
   rules:
   - apiGroups:
     - ""

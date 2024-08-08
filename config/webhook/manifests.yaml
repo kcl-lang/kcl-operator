@@ -12,7 +12,7 @@ webhooks:
       namespace: system
       path: /mutate
   failurePolicy: Fail
-  name: pod-annotate-webhook.slok.dev
+  name: kcl-operator-webhook.slok.dev
   rules:
   - apiGroups:
     - ""
