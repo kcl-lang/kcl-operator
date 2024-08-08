@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pod-annotate-webhook
+  name: kcl-operator-webhook
   labels:
-    app: pod-annotate-webhook
+    app: kcl-operator-webhook
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pod-annotate-webhook
+      app: kcl-operator-webhook
   template:
     metadata:
       labels:
-        app: pod-annotate-webhook
+        app: kcl-operator-webhook
     spec:
       containers:
-        - name: pod-annotate-webhook
+        - name: kcl-operator-webhook
           image: kcllang/webhookserver
           imagePullPolicy: Always
           args:
@@ -29,18 +29,18 @@ spec:
       volumes:
         - name: webhook-certs
           secret:
-            secretName: pod-annotate-webhook-certs
+            secretName: kcl-operator-webhook-certs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pod-annotate-webhook
+  name: kcl-operator-webhook
   labels:
-    app: pod-annotate-webhook
+    app: kcl-operator-webhook
 spec:
   ports:
   - port: 443
     protocol: TCP
     targetPort: 8081
   selector:
-    app: pod-annotate-webhook
+    app: kcl-operator-webhook

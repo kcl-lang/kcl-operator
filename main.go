@@ -31,6 +31,7 @@ import (
 	clientconfig "sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
+	"kcl-lang.io/kcl-go/pkg/env"
 	krmkcldevv1alpha1 "kcl-lang.io/kcl-operator/api/kclrun/v1alpha1"
 	"kcl-lang.io/kcl-operator/pkg/webhook/handler"
 
@@ -64,6 +65,9 @@ var (
 )
 
 func init() {
+	// Enable the KCL fast eval mode
+	env.EnableFastEvalMode()
+	// Register Kubernetes schemes
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(krmkcldevv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
