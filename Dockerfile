@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} golang:1.22 AS build
+FROM --platform=${BUILDPLATFORM} golang:1.22 AS builder
 
 # The TARGETOS and TARGETARCH args are set by docker. We set GOOS and GOARCH to
 # these values to ask Go to compile a binary for these architectures. If
