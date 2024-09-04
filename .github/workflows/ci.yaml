@@ -12,7 +12,8 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -34,3 +35,4 @@ jobs:
       - name: Run e2e tests
         run: |
           make deploy
+          kubectl rollout status deploy/kcl-webhook-server --timeout=1m

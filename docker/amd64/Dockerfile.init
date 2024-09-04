@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} golang:1.22 AS builder
+FROM --platform=${BUILDPLATFORM} golang:1.23 AS builder
 
 # The TARGETOS and TARGETARCH args are set by docker. We set GOOS and GOARCH to
 # these values to ask Go to compile a binary for these architectures. If
@@ -14,14 +14,14 @@ WORKDIR /
 
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 go build -o manager
+RUN GOOS=linux GOARCH=amd64 go build -o webhook-server cmd/wehbook-init
 
 FROM kcllang/kcl
 
 WORKDIR /
-COPY --from=builder /manager .
+COPY --from=builder /webhook-server .
 
 ENV KCL_FAST_EVAL=1
 ENV LANG="en_US.UTF-8"
 
-ENTRYPOINT ["/manager"]
+ENTRYPOINT ["/webhook-init"]
