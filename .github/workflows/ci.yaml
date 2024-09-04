@@ -33,6 +33,4 @@ jobs:
         run: make
 
       - name: Run e2e tests
-        run: |
-          make deploy
-          kubectl rollout status deploy/kcl-webhook-server --timeout=1m
+        run: ./scripts/deploy_test.sh
