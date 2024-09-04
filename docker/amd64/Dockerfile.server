@@ -30,7 +30,7 @@ ARG TARGETARCH
 # Build the webhook server binary. The type=target mount tells Docker to mount the
 # current directory read-only in the WORKDIR. The type=cache mount tells Docker
 # to cache the Go modules cache across builds.
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o webhook-server cmd/wehbook-server/main.go
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o webhook-server cmd/webhook-server/main.go
 
 FROM ${BASE_IMAGE} as image
 RUN apt-get update && apt-get install -y ca-certificates tini

@@ -98,13 +98,13 @@ build-linux: ## Build binaries.
 
 .PHONY: webhook
 webhook: manifests generate fmt vet ## Build webhook server and init container binary
-	go build -o bin/wehbook-server cmd/webhook-server/main.go
-	go build -o bin/wehbook-init cmd/webhook-init/main.go
+	go build -o bin/webhook-server cmd/webhook-server/main.go
+	go build -o bin/webhook-init cmd/webhook-init/main.go
 
 .PHONY: webook-linux
 webhook-linux: generate fmt vet
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o bin/wehbook-server cmd/webhook-server/main.go
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o bin/wehbook-init cmd/webhook-init/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o bin/webhook-server cmd/webhook-server/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o bin/webhook-init cmd/webhook-init/main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
