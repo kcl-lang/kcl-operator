@@ -63,7 +63,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: webhook
+  name: kcl-webhook
   namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -113,14 +113,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: webhook-rolebinding
+  name: kcl-webhook-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: webhook-role
+  name: kcl-webhook-role
 subjects:
 - kind: ServiceAccount
-  name: webhook
+  name: kcl-webhook
   namespace: default
 ---
 apiVersion: v1
@@ -181,6 +181,7 @@ spec:
         volumeMounts:
         - mountPath: /etc/webhook/certs
           name: webhook-certs
+      serviceAccountName: kcl-webhook
       volumes:
       - emptyDir: {}
         name: webhook-certs

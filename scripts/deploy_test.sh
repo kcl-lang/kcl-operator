@@ -28,8 +28,9 @@ if [ $ROLLOUT_STATUS -ne 0 ]; then
     for pod in $PODS; do
         echo -e "${YELLOW}Pod: $pod${NC}"
         kubectl describe pod/$pod
-        echo -e "${YELLOW}Pod logs:${NC}"
+        echo -e "${YELLOW}Pod init container logs:${NC}"
         kubectl logs $pod -c kcl-webhook-init
+        echo -e "${YELLOW}Pod main container logs:${NC}"
         kubectl logs $pod -c kcl-webhook-server
     done
 else
