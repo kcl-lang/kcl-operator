@@ -73,10 +73,11 @@ func (v *MutationHandler) Mutate(ctx context.Context, r *kwhmodel.AdmissionRevie
 			v.Logger.Errorf("Data decode error %v", err)
 			return &kwhmutating.MutatorResult{}, err
 		}
-		v.Logger.Infof("Mutate using KCL finished")
+		v.Logger.Infof("Mutate using KCL finished.")
 		return &kwhmutating.MutatorResult{
 			MutatedObject: unstructuredObj,
 		}, nil
 	}
+	v.Logger.Infof("No KCL resource found")
 	return &kwhmutating.MutatorResult{}, nil
 }
