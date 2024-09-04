@@ -22,6 +22,7 @@ import (
 //+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=krm.kcl.dev,resources=kclruns/finalizers,verbs=update
+//+kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch;create;update;patch;delete
 
 // MutationHandler validates Kubernetes resources using the KCL source.
 type MutationHandler struct {

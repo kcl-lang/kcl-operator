@@ -147,6 +147,8 @@ func WriteFile(filepath string, sCert *bytes.Buffer) error {
 	return nil
 }
 
+//+kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch;create;update;patch;delete
+
 func createMutationConfig(caCert *bytes.Buffer) {
 	var (
 		webhookNamespace, _ = os.LookupEnv("WEBHOOK_NAMESPACE")

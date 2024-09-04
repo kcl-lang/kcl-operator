@@ -72,6 +72,18 @@ metadata:
   name: webhook-role
 rules:
 - apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - krm.kcl.dev
   resources:
   - kclruns
