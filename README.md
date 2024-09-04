@@ -103,7 +103,3 @@ See [here](https://kcl-lang.io/docs/reference/lang/tour) to study more features 
 ## Examples
 
 See [here](https://github.com/kcl-lang/krm-kcl/tree/main/examples) for more examples.
-
-git tag v0.1.0
-git push origin v0.1.0
-gh release create v0.1.0 --draft --generate-notes --title "v0.1.0 Release"
