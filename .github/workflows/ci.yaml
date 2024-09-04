@@ -35,4 +35,4 @@ jobs:
       - name: Run e2e tests
         run: |
           make deploy
-          kubectl -n source-system rollout status deploy/kcl-webhook-server --timeout=1m
+          kubectl rollout status deploy/kcl-webhook-server --timeout=1m
