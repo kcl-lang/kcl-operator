@@ -14,7 +14,7 @@ WORKDIR /
 
 COPY . .
 
-RUN GOOS=linux GOARCH=amd64 go build -o webhook-server cmd/wehbook-init
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o webhook-init cmd/wehbook-init
 
 FROM kcllang/kcl
 
