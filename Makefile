@@ -399,10 +399,6 @@ codegen-applyconfigurations: $(APPLYCONFIGURATION_GEN) ## Generate apply configu
 .PHONY: codegen-client-all
 codegen-client-all: codegen-register codegen-defaulters codegen-applyconfigurations codegen-client-clientset codegen-client-listers codegen-client-informers ## Generate clientset, listers and informers
 
-.PHONY: codegen-webhook
-codegen-webhook:
-	operator-sdk create webhook --group krm.kcl.dev --version v1alpha1 --kind KCLRun --defaulting --programmatic-validation
-
 # Generate helm chart
 helmchart: kustomize
 	mkdir -p ./charts/${WEBHOOK_NAME}/templates
