@@ -87,10 +87,50 @@ We can find the annotation `managed-by=kcl-operator` is added on the pod.
 Here's what you can do in the KCL script:
 
 + Read resources from `option("resource_list")`. The `option("resource_list")` complies with the [KRM Functions Specification](https://github.com/kubernetes-sigs/kustomize/blob/master/cmd/config/docs/api-conventions/functions-spec.md#krm-functions-specification). You can read the input resources from `option("items")` and the `params` from `option("params")`.
-+ Return a KRM list for output resources.
 + Return an error using `assert {condition}, {error_message}`.
-+ Read the environment variables. e.g. `option("PATH")` (**Not yet implemented**).
-+ Read the OpenAPI schema. e.g. `option("open_api")["definitions"]["io.k8s.api.apps.v1.Deployment"]` (**Not yet implemented**).
++ Log variable values using the function `print(variable)` and it will be output to the stdout of the pod.
++ Read the PATH variables. e.g. `option("PATH")`.
++ Read the environment variables. e.g. `option("env")`.
+
+### Expect Output
+
+A KRM YAML list means that each document must have an `apiVersion`, `kind` through the `items` field or a single YAML output.
+
++ Using the `items` field
+
+```yaml
+apiVersion: krm.kcl.dev/v1alpha1
+kind: KCLRun
+metadata:
+  name: basic
+spec:
+  source: |
+    items = [{
+        apiVersion: "v1"
+        kind: "Foo"
+        metadata.name = "foo"
+    }, {
+        apiVersion: "v1"
+        kind: "Bar"
+        metadata.name = "bar"
+    }]
+```
+
++ Single YAML output
+
+```yaml
+apiVersion: krm.kcl.dev/v1alpha1
+kind: KCLRun
+metadata:
+  name: basic
+spec:
+  source: |
+    {
+        apiVersion: "v1"
+        kind: "Foo"
+        metadata.name = "foo"
+    }
+```
 
 ## Library
 
