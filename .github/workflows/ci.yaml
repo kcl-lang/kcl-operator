@@ -33,7 +33,7 @@ jobs:
         run: make
 
       - name: Certs generate tests
-        run: CERTS_PATH="." go run cmd/webhook-init/main.go
+        run: CERTS_PATH="." MUTATE_CONFIG="test" WEBHOOK_SERVICE="test" WEBHOOK_NAMESPACE="default" go run cmd/webhook-init/main.go
 
       - name: Run e2e tests
         run: ./scripts/deploy_test.sh
