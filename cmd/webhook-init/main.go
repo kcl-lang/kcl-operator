@@ -26,17 +26,24 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"path/filepath"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 
 	admissionregistrationv1 "k8s.io/api/admissionregistration/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
+
+	"github.com/sirupsen/logrus"
+	kwhlogrus "github.com/slok/kubewebhook/v2/pkg/log/logrus"
 )
 
 func main() {
+	logrusLogEntry := logrus.NewEntry(logrus.New())
+	logrusLogEntry.Logger.SetLevel(logrus.DebugLevel)
+	logger := kwhlogrus.NewLogrus(logrusLogEntry)
+
 	var caPEM, serverCertPEM, serverPrivKeyPEM *bytes.Buffer
 	// CA config
 	ca := &x509.Certificate{
@@ -55,13 +62,15 @@ func main() {
 	// CA private key
 	caPrivKey, err := rsa.GenerateKey(cryptorand.Reader, 4096)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorf("unable to generate CA private key: %v", err)
+		os.Exit(1)
 	}
 
 	// Self signed CA certificate
 	caBytes, err := x509.CreateCertificate(cryptorand.Reader, ca, ca, &caPrivKey.PublicKey, caPrivKey)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorf("unable to self signed CA certificate: %v", err)
+		os.Exit(1)
 	}
 
 	// PEM encode CA cert
@@ -115,21 +124,35 @@ func main() {
 		Bytes: x509.MarshalPKCS1PrivateKey(serverPrivKey),
 	})
 
-	err = os.MkdirAll("/etc/webhook/certs/", 0666)
-	if err != nil {
-		log.Panic(err)
-	}
-	err = WriteFile("/etc/webhook/certs/tls.crt", serverCertPEM)
-	if err != nil {
-		log.Panic(err)
+	var (
+		certsPath, _ = os.LookupEnv("CERTS_PATH")
+	)
+	if certsPath == "" {
+		certsPath = "/etc/webhook/certs/"
 	}
 
-	err = WriteFile("/etc/webhook/certs/tls.key", serverPrivKeyPEM)
+	err = os.MkdirAll(certsPath, 0666)
 	if err != nil {
-		log.Panic(err)
+		logger.Errorf("unable to mkdir %s: %v", certsPath, err)
+		os.Exit(1)
+	}
+	err = WriteFile(filepath.Join(certsPath, "tls.crt"), serverCertPEM)
+	if err != nil {
+		logger.Errorf("unable to generate tls.crt: %v", err)
+		os.Exit(1)
+	}
+
+	err = WriteFile(filepath.Join(certsPath, "tls.key"), serverPrivKeyPEM)
+	if err != nil {
+		logger.Errorf("unable to generate tls.key: %v", err)
+		os.Exit(1)
 	}
 	// Create `MutatingWebhookConfiguration` resources
-	createMutationConfig(serverCertPEM)
+	err = createMutationConfig(serverCertPEM)
+	if err != nil {
+		logger.Errorf("unable to create `MutatingWebhookConfiguration` resources: %v", err)
+		os.Exit(1)
+	}
 }
 
 // WriteFile writes data in the file at the given path
@@ -149,7 +172,7 @@ func WriteFile(filepath string, sCert *bytes.Buffer) error {
 
 //+kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch;create;update;patch;delete
 
-func createMutationConfig(caCert *bytes.Buffer) {
+func createMutationConfig(caCert *bytes.Buffer) error {
 	var (
 		webhookNamespace, _ = os.LookupEnv("WEBHOOK_NAMESPACE")
 		mutationCfgName, _  = os.LookupEnv("MUTATE_CONFIG")
@@ -158,11 +181,12 @@ func createMutationConfig(caCert *bytes.Buffer) {
 	config := ctrl.GetConfigOrDie()
 	kubeClient, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic("failed to set go-client")
+		return err
 	}
 
 	path := "/mutate"
 	fail := admissionregistrationv1.Fail
+	sideEffectClassNone := admissionregistrationv1.SideEffectClassNone
 
 	mutateconfig := &admissionregistrationv1.MutatingWebhookConfiguration{
 		ObjectMeta: metav1.ObjectMeta{
@@ -186,11 +210,14 @@ func createMutationConfig(caCert *bytes.Buffer) {
 					Resources:   []string{"deployments", "pods"},
 				},
 			}},
-			FailurePolicy: &fail,
+			SideEffects:             &sideEffectClassNone,
+			AdmissionReviewVersions: []string{"v1", "v1beta1"},
+			FailurePolicy:           &fail,
 		}},
 	}
 
 	if _, err := kubeClient.AdmissionregistrationV1().MutatingWebhookConfigurations().Create(context.Background(), mutateconfig, metav1.CreateOptions{}); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }

@@ -32,5 +32,8 @@ jobs:
       - name: Project Build & Check
         run: make
 
+      - name: Certs generate tests
+        run: CERTS_PATH="." go run cmd/webhook-init/main.go
+
       - name: Run e2e tests
         run: ./scripts/deploy_test.sh
