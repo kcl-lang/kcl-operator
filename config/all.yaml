@@ -63,21 +63,26 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  labels:
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: kcl-operator
-    app.kubernetes.io/instance: controller-manager
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/name: serviceaccount
-    app.kubernetes.io/part-of: kcl-operator
-  name: controller-manager
+  name: kcl-webhook
   namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: webhook-role
+  name: kcl-webhook-role
 rules:
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
   - krm.kcl.dev
   resources:
@@ -108,14 +113,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: webhook-rolebinding
+  name: kcl-webhook-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: webhook-role
+  name: kcl-webhook-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: kcl-webhook
   namespace: default
 ---
 apiVersion: v1
@@ -176,6 +181,7 @@ spec:
         volumeMounts:
         - mountPath: /etc/webhook/certs
           name: webhook-certs
+      serviceAccountName: kcl-webhook
       volumes:
       - emptyDir: {}
         name: webhook-certs
