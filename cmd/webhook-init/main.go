@@ -80,9 +80,16 @@ func main() {
 		Bytes: caBytes,
 	})
 
-	dnsNames := []string{"webhook-service",
-		"webhook-service.default", "webhook-service.default.svc"}
-	commonName := "webhook-service.default.svc"
+	var (
+		webhookService, _ = os.LookupEnv("WEBHOOK_SERVICE")
+	)
+	if webhookService == "" {
+		webhookService = "webhook-service"
+	}
+
+	commonName := fmt.Sprintf("%s.default.svc", webhookService)
+	dnsNames := []string{webhookService,
+		fmt.Sprintf("%s.default", webhookService), commonName}
 
 	// server cert config
 	cert := &x509.Certificate{
@@ -178,6 +185,9 @@ func createMutationConfig(caCert *bytes.Buffer) error {
 		mutationCfgName, _  = os.LookupEnv("MUTATE_CONFIG")
 		webhookService, _   = os.LookupEnv("WEBHOOK_SERVICE")
 	)
+	if webhookService == "" {
+		webhookService = "webhook-service"
+	}
 	config := ctrl.GetConfigOrDie()
 	kubeClient, err := kubernetes.NewForConfig(config)
 	if err != nil {
