@@ -8,8 +8,7 @@ require (
 	k8s.io/api v0.31.1
 	k8s.io/apimachinery v0.31.1
 	k8s.io/client-go v0.31.1
-	kcl-lang.io/kcl-go v0.10.6
-	kcl-lang.io/krm-kcl v0.10.6
+	kcl-lang.io/krm-kcl v0.10.7
 	sigs.k8s.io/controller-runtime v0.19.0
 	sigs.k8s.io/yaml v1.4.0
 )
@@ -64,7 +63,7 @@ require (
 	github.com/emicklei/proto v1.13.2 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
-	github.com/fatih/color v1.17.0 // indirect
+	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
@@ -197,10 +196,11 @@ require (
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240827152857-f7e401e7b4c2 // indirect
 	k8s.io/utils v0.0.0-20240821151609-f90d01438635 // indirect
-	kcl-lang.io/cli v0.10.6 // indirect
+	kcl-lang.io/cli v0.10.7 // indirect
+	kcl-lang.io/kcl-go v0.10.7 // indirect
 	kcl-lang.io/kcl-openapi v0.9.0 // indirect
 	kcl-lang.io/kpm v0.10.0 // indirect
-	kcl-lang.io/lib v0.10.6 // indirect
+	kcl-lang.io/lib v0.10.7 // indirect
 	oras.land/oras-go v1.2.6 // indirect
 	oras.land/oras-go/v2 v2.5.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
