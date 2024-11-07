@@ -32,7 +32,7 @@ type KCLRunSpec struct {
 	// Source is a required field for providing a KCL script inline.
 	Source string `json:"source" yaml:"source"`
 	// Params are the parameters in key-value pairs format.
-	Params map[string]runtime.RawExtension `json:"params,omitempty" yaml:"params,omitempty"`
+	Params runtime.RawExtension `json:"params,omitempty" yaml:"params,omitempty"`
 }
 
 // KCLRunStatus defines the observed state of KCLRun

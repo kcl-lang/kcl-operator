@@ -72,4 +72,29 @@ EOF
     else
         echo -e "${RED}The annotation 'managed-by: kcl-operator' is not added to the pod.${NC}"
     fi
+    kubectl apply -f- << EOF
+apiVersion: krm.kcl.dev/v1alpha1
+kind: KCLRun
+metadata:
+  name: web-service
+  annotations: 
+    krm.kcl.dev/version: 0.0.1
+    krm.kcl.dev/type: abstraction
+    documentation: >-
+      Web service application abstraction
+spec:
+  params:
+    name: app
+    containers:
+      nginx:
+        image: nginx
+        ports:
+        - containerPort: 80
+    service:
+      ports:
+      - port: 80
+    labels:
+      name: app
+  source: ./examples/abstraction/web-service/main.k
+EOF
 fi
