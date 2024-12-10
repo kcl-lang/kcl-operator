@@ -9,7 +9,7 @@ require (
 	k8s.io/apimachinery v0.31.2
 	k8s.io/client-go v0.31.2
 	kcl-lang.io/krm-kcl v0.10.8
-	sigs.k8s.io/controller-runtime v0.19.2
+	sigs.k8s.io/controller-runtime v0.19.3
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -65,7 +65,6 @@ require (
 	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/getkin/kin-openapi v0.128.0 // indirect
 	github.com/go-errors/errors v1.5.1 // indirect
