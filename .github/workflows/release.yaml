@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 jobs:
-  webhook-init-image-amd64:
+  webhook-init-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -46,12 +46,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  webhook-server-image-amd64:
+  webhook-server-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -89,7 +89,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
