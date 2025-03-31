@@ -2,6 +2,8 @@ module kcl-lang.io/kcl-operator
 
 go 1.23.0
 
+toolchain go1.24.1
+
 require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/slok/kubewebhook/v2 v2.7.0
@@ -9,7 +11,7 @@ require (
 	k8s.io/apimachinery v0.32.1
 	k8s.io/client-go v0.32.1
 	kcl-lang.io/krm-kcl v0.11.1
-	sigs.k8s.io/controller-runtime v0.20.3
+	sigs.k8s.io/controller-runtime v0.20.4
 	sigs.k8s.io/yaml v1.4.0
 )
 
