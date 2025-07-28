@@ -12,7 +12,7 @@ require (
 	k8s.io/client-go v0.33.1
 	kcl-lang.io/krm-kcl v0.11.2
 	sigs.k8s.io/controller-runtime v0.21.0
-	sigs.k8s.io/yaml v1.5.0
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
