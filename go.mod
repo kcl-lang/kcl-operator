@@ -11,7 +11,7 @@ require (
 	k8s.io/apimachinery v0.34.0
 	k8s.io/client-go v0.34.0
 	kcl-lang.io/krm-kcl v0.11.3
-	sigs.k8s.io/controller-runtime v0.22.0
+	sigs.k8s.io/controller-runtime v0.22.1
 	sigs.k8s.io/yaml v1.6.0
 )
 
