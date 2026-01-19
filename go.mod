@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.1
 
 require (
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/slok/kubewebhook/v2 v2.7.0
 	k8s.io/api v0.34.2
 	k8s.io/apimachinery v0.34.2
