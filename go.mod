@@ -10,7 +10,7 @@ require (
 	k8s.io/api v0.37.0
 	k8s.io/apimachinery v0.37.0
 	k8s.io/client-go v0.37.0
-	kcl-lang.io/krm-kcl v0.12.9
+	kcl-lang.io/krm-kcl v0.12.10
 	sigs.k8s.io/controller-runtime v0.25.2
 	sigs.k8s.io/yaml v1.6.0
 )
