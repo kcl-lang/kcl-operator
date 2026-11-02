@@ -46,6 +46,14 @@ func (v *MutationHandler) Mutate(ctx context.Context, r *kwhmodel.AdmissionRevie
 		// Input Example: https://github.com/kcl-lang/krm-kcl/blob/main/examples/mutation/set-annotations/suite/good.yaml
 		in, out := bytes.NewBuffer(r.NewObjectRaw), bytes.NewBuffer([]byte{})
 		for _, kclRun := range kclRunList.Items {
+			// Typed clients often return objects with an empty TypeMeta. krm-kcl
+			// only treats a document as a KCLRun when apiVersion and kind are set.
+			if kclRun.APIVersion == "" {
+				kclRun.APIVersion = krmkcldevv1alpha1.GroupVersion.String()
+			}
+			if kclRun.Kind == "" {
+				kclRun.Kind = "KCLRun"
+			}
 			kclRunBytes, err := yaml.Marshal(kclRun)
 			if err != nil {
 				v.Logger.Errorf("Get KCL source %v bytes error: %v", kclRun.Name, err)
@@ -60,7 +68,9 @@ func (v *MutationHandler) Mutate(ctx context.Context, r *kwhmodel.AdmissionRevie
 			v.Logger.Errorf("KCL Pipeline exec error: %v", err)
 			return &kwhmutating.MutatorResult{}, err
 		}
-		v.Logger.Infof("Decode Mutate object.. %v", out.String())
+		// Log the mutated manifest, but never its Secret payload. data, stringData,
+		// and last-applied-configuration are redacted; other kinds are unchanged.
+		v.Logger.Infof("Decode Mutate object.. %v", formatMutatedObjectForLog(out.String(), admissionObjectKind(ctx, r, obj)))
 		// The actual mutation is done by a string in JSONPatch style, i.e. we don't _actually_ modify the object, but
 		// tell K8S how it should modifiy it
 		o, _, err := runtimeyaml.NewDecodingSerializer(unstructured.UnstructuredJSONScheme).Decode(out.Bytes(), nil, nil)
