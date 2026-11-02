@@ -92,6 +92,27 @@ Here's what you can do in the KCL script:
 + Read the PATH variables. e.g. `option("PATH")`.
 + Read the environment variables. e.g. `option("env")`.
 
+### Admission `object` and `oldObject`
+
+`option("items")` is the resource the webhook mutates. On CREATE and UPDATE that is the admission `object`.
+
+On UPDATE the API server also sends `oldObject`. The webhook copies both onto the KCLRun document that is fed to KCL, under `spec.admission`. The KCLRun stored in the cluster is unchanged, and `option("items")` is still only the resource to mutate.
+
++ `option("resource_list").functionConfig.spec.admission.object` — admission `object`
++ `option("resource_list").functionConfig.spec.admission.oldObject` — admission `oldObject`
+
+With more than one `KCLRun` in the namespace, each program sees the same original pair. `option("items")` is the output of the previous program.
+
+The API server sends `oldObject` for webhooks registered on `UPDATE`. The sample mutating webhook configuration registers `CREATE` only; add `UPDATE` to the webhook rules to receive `oldObject`.
+
+```kcl
+item = option("items")[0]
+old = option("resource_list").functionConfig.spec.admission.oldObject
+items = [item | {
+    metadata.annotations: {"previous-image" = old.spec.containers[0].image}
+}]
+```
+
 ### Expect Output
 
 A KRM YAML list means that each document must have an `apiVersion`, `kind` through the `items` field or a single YAML output.
