@@ -46,9 +46,25 @@ func (v *MutationHandler) Mutate(ctx context.Context, r *kwhmodel.AdmissionRevie
 		// Input Example: https://github.com/kcl-lang/krm-kcl/blob/main/examples/mutation/set-annotations/suite/good.yaml
 		in, out := bytes.NewBuffer(r.NewObjectRaw), bytes.NewBuffer([]byte{})
 		for _, kclRun := range kclRunList.Items {
+			// Typed clients often return objects with an empty TypeMeta. krm-kcl
+			// only treats a document as a KCLRun when apiVersion and kind are set,
+			// which is what makes spec.admission visible to the KCL program.
+			if kclRun.APIVersion == "" {
+				kclRun.APIVersion = krmkcldevv1alpha1.GroupVersion.String()
+			}
+			if kclRun.Kind == "" {
+				kclRun.Kind = "KCLRun"
+			}
 			kclRunBytes, err := yaml.Marshal(kclRun)
 			if err != nil {
 				v.Logger.Errorf("Get KCL source %v bytes error: %v", kclRun.Name, err)
+				return &kwhmutating.MutatorResult{}, err
+			}
+			// UPDATE reviews carry object and oldObject. Attach both to this
+			// pipeline copy so KCL can read them from the function config.
+			kclRunBytes, err = attachAdmissionObjects(kclRunBytes, r.NewObjectRaw, r.OldObjectRaw)
+			if err != nil {
+				v.Logger.Errorf("Attach admission objects to KCL source %v error: %v", kclRun.Name, err)
 				return &kwhmutating.MutatorResult{}, err
 			}
 			in.WriteString("\n---\n")
