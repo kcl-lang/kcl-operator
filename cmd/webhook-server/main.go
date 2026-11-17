@@ -76,6 +76,9 @@ func main() {
 	logrusLogEntry := logrus.NewEntry(logrus.New())
 	logrusLogEntry.Logger.SetLevel(logrus.DebugLevel)
 	logger := kwhlogrus.NewLogrus(logrusLogEntry)
+	// kubewebhook logs the admission JSON patch at debug level. The wrapper
+	// drops Secret data and stringData from that line.
+	logger = handler.NewSecretSafeLogger(logger)
 
 	cfg := initFlags()
 

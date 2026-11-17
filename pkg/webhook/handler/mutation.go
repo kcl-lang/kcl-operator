@@ -76,7 +76,9 @@ func (v *MutationHandler) Mutate(ctx context.Context, r *kwhmodel.AdmissionRevie
 			v.Logger.Errorf("KCL Pipeline exec error: %v", err)
 			return &kwhmutating.MutatorResult{}, err
 		}
-		v.Logger.Infof("Decode Mutate object.. %v", out.String())
+		// Log the mutated manifest, but never its Secret payload. data, stringData,
+		// and last-applied-configuration are redacted; other kinds are unchanged.
+		v.Logger.Infof("Decode Mutate object.. %v", formatMutatedObjectForLog(out.String(), admissionObjectKind(ctx, r, obj)))
 		// The actual mutation is done by a string in JSONPatch style, i.e. we don't _actually_ modify the object, but
 		// tell K8S how it should modifiy it
 		o, _, err := runtimeyaml.NewDecodingSerializer(unstructured.UnstructuredJSONScheme).Decode(out.Bytes(), nil, nil)
